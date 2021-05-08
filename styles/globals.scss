@@ -1,0 +1,16 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@font-face {
+  font-family: 'MarkPro';
+  src: local('MarkPro'), url(../public/fonts/MARKPRO.woff) format('woff');
+}
+
+body {
+  @apply font-sans w-screen h-screen overflow-hidden;
+}
+
+#__next {
+  @apply font-sans w-full h-full overflow-hidden;
+}

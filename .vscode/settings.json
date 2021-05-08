@@ -1,0 +1,7 @@
+{
+    "scss.validate": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": false
+    },
+    "editor.formatOnSave": true
+}
