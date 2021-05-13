@@ -14,14 +14,14 @@ module.exports = {
     extend: {
       colors: {
         main: {
-            1: '#EAEAEA',
+          1: '#EAEAEA',
           2: '#D2E8F2',
           3: '#B2ACAC',
           4: '#07ABBF',
           5: '#0081CC',
           6: '#151F4E',
           7: '#001E3B',
-          8: '#E65030',
+          8: '#E65030'
         },
         bg: {
           100: '#FFFFFF',

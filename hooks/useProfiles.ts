@@ -1,16 +1,18 @@
-import { ApolloError,  useQuery } from '@apollo/client';
+import { ApolloError, useQuery } from '@apollo/client';
+import { User } from '@prisma/client';
 import profileByUsernameGql from 'gql/profileByUsername.gql';
-import {  useMemo } from 'react';
+import { useMemo } from 'react';
 
 type ProfileQueryHookReturn = {
-  profile: any,
+  profile: User,
   loading: boolean,
   error: ApolloError
 };
 
 export const useProfileByUsername = ({
-  user,
   username
+}: {
+  username: string
 }): ProfileQueryHookReturn => {
   const { data, loading, error } = useQuery(profileByUsernameGql, {
     variables: { username },
@@ -19,6 +21,5 @@ export const useProfileByUsername = ({
 
   const profile = useMemo(() => data?.user, [data?.user]);
 
- 
   return { profile, loading, error };
 };

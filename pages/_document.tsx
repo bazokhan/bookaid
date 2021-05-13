@@ -11,7 +11,10 @@ export default class MyDocument extends Document {
             name="description"
             content="Bookaid help you manage your accounting books."
           />
-          <meta name="keywords" content="accounting, budget, books, transactions" />
+          <meta
+            name="keywords"
+            content="accounting, budget, books, transactions"
+          />
         </Head>
         <body className="relative">
           <div

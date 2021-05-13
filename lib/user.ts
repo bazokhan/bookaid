@@ -1,33 +1,16 @@
-import { Prisma } from '@prisma/client';
-import crypto, { BinaryLike } from 'crypto';
+import { Prisma, User } from '@prisma/client';
+import crypto from 'crypto';
 import prisma from './prisma';
-
-export type CreateUserDto = {
-  username: string,
-  password: string,
-  email: string
-};
-
-export type FindUserDto = {
-  username: string
-};
-
-export type User = {
-  id?: number,
-  username: string,
-  email: string,
-  salt?: BinaryLike,
-  hash?: string,
-  createdAt?: Date,
-  updatedAt?: Date,
-  image?: string,
-};
 
 export const createUser = async ({
   username,
   password,
   email
-}: CreateUserDto): Promise<User> => {
+}: {
+  username: string,
+  password: string,
+  email: string
+}): Promise<User> => {
   // Here you should create the user and save the salt and hashed password (some dbs may have
   // authentication methods that will do it for you so you don't have to worry about it):
   const salt = crypto.randomBytes(16).toString('hex');
@@ -51,7 +34,11 @@ export const createUser = async ({
 
 // Here you should lookup for the user in your DB
 // using username or email
-export const findUser = async ({ username }: FindUserDto): Promise<User> =>
+export const findUser = async ({
+  username
+}: {
+  username: string
+}): Promise<User> =>
   // users.find(user => user.username === username);
   prisma.user.findFirst({
     where: {
