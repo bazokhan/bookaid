@@ -8,18 +8,165 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum StatmentType {
+  INCOME_STATEMENT // revenue, expenses, profit or loss
+  BALANCE_SHEET // what it owns [assets], what it owes [liability], what it is worth [equity]
+  CASHFLOW_STATEMENT // operating, investing, financing
+}
+
+// gross profit = revenues - direct operating cost
+// operating income (profit, income) = gross profit - indirect operating cost
+// net income = income - interest and tax
+
+enum CashflowType {
+  OPERATING_ACTIVITIES
+  // cashflow that actually happened - operation
+  INVESTMENT_ACTIVITIES
+  // assets
+  FINANCIAL_ACTIVITIES
+  // raising debt and repaying debt
+}
+
+enum ClientType {
+  ACCOUNT
+  VENDOR
+  CUSTOMER
+  WORKER
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum UserStatus {
+  ACCEPTED
+  PENDING
+  ONHOLD
+  DECLINED
+}
+
 model User {
-  id               Int               @id @default(autoincrement())
-  username         String?           @unique
-  email            String?           @unique
-  emailVerified    DateTime?         @map("email_verified")
-  image            String?
-  hash             String?
-  salt             String?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id            Int          @id @default(autoincrement())
+  username      String?      @unique
+  email         String?      @unique
+  emailVerified DateTime?    @map("email_verified")
+  image         String?
+  hash          String?
+  salt          String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  createdTx     Tx[]
+  accounts      Account[]
+  status        UserStatus   @default(PENDING)
+  permissions   Permission[]
 
   @@map("users")
 }
 
+model Account {
+  id                Int               @id @default(autoincrement())
+  name              String
+  owner             User              @relation(fields: [userId], references: [id])
+  userId            Int
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  permissions       Permission[]
+  client            Client?           @relation("account_client", fields: [clientId], references: [id])
+  clientId          Int?
+  categoriesVisible AccountCategory[]
+  clientsVisible    AccountClient[]
 
+  @@unique([name, userId], name: "user_account")
+  @@map("accounts")
+}
+
+model AccountCategory {
+  id         Int      @id @default(autoincrement())
+  account    Account  @relation(fields: [accountId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+  accountId  Int
+  categoryId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([accountId, categoryId], name: "acc_cat")
+  @@map("account_categories")
+}
+
+model AccountClient {
+  id        Int      @id @default(autoincrement())
+  account   Account  @relation(fields: [accountId], references: [id])
+  client    Client   @relation(fields: [clientId], references: [id])
+  accountId Int
+  clientId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([accountId, clientId], name: "acc_cli")
+  @@map("account_clients")
+}
+
+model Permission {
+  id        Int      @id @default(autoincrement())
+  account   Account  @relation(fields: [accountId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  role      Role
+  accountId Int
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("permission")
+}
+
+model Client {
+  id              Int             @id @default(autoincrement())
+  name            String
+  clientType      ClientType
+  asPayer         Tx[]            @relation("payer")
+  asPayee         Tx[]            @relation("payee")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  account         Account?        @relation("account_client")
+  accountsVisible AccountClient[]
+
+  @@map("clients")
+}
+
+model Category {
+  id              Int               @id @default(autoincrement())
+  name            String
+  categoryType    CategoryType
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  tx              Tx[]
+  accountsVisible AccountCategory[]
+
+  @@map("categories")
+}
+
+model Tx {
+  id         Int       @id @default(autoincrement())
+  payer      Client    @relation(name: "payer", fields: [payerId], references: [id])
+  payee      Client    @relation(name: "payee", fields: [payeeId], references: [id])
+  payerId    Int
+  payeeId    Int
+  amount     Int
+  date       DateTime? @default(now())
+  category   Category? @relation(fields: [categoryId], references: [id])
+  createdBy  User?     @relation(fields: [userId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  userId     Int?
+  categoryId Int?
+
+  @@map("tx")
+}
