@@ -1,8 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import { useUser } from 'hooks/useUser';
 import { useAccountMutations, useMyAccounts } from 'hooks/useAccounts';
 import { withApollo } from 'lib/WithApollo';
+import { useProfileByUsernameLazy } from 'hooks/useProfiles';
+import { useDebounce } from 'use-debounce/lib';
 
 const Home: React.FC = () => {
   const user = useUser({ redirectTo: '/login' });
@@ -21,6 +23,23 @@ const Home: React.FC = () => {
     },
     [createAccount]
   );
+
+  const [searchValue, setSearchValue] = useState('');
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
+  const {
+    getProfileByUsername,
+    profile,
+    loading: searchProfileLoading,
+    error: searchProfileError
+  } = useProfileByUsernameLazy();
+
+  useEffect(() => {
+    const search = async () => {
+      await getProfileByUsername(debouncedSearchValue);
+    };
+    search();
+  }, [debouncedSearchValue, getProfileByUsername]);
 
   return (
     <Layout>
@@ -46,6 +65,20 @@ const Home: React.FC = () => {
           {createAccountLoading ? 'loading..' : 'Create'}
         </button>
       </form>
+      <p>==============================</p>
+      <input
+        placeholder="search profiles"
+        onChange={e => setSearchValue(e.target.value)}
+      />
+      {debouncedSearchValue ? (
+        <p>
+          {searchProfileError
+            ? 'error'
+            : searchProfileLoading
+            ? 'loading'
+            : profile?.username || 'No user found'}
+        </p>
+      ) : null}
     </Layout>
   );
 };
