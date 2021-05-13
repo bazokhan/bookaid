@@ -29,7 +29,7 @@ const Home: React.FC = () => {
 
   const {
     getProfileByUsername,
-    profile,
+    profiles,
     loading: searchProfileLoading,
     error: searchProfileError
   } = useProfileByUsernameLazy();
@@ -71,13 +71,15 @@ const Home: React.FC = () => {
         onChange={e => setSearchValue(e.target.value)}
       />
       {debouncedSearchValue ? (
-        <p>
-          {searchProfileError
-            ? 'error'
-            : searchProfileLoading
-            ? 'loading'
-            : profile?.username || 'No user found'}
-        </p>
+        searchProfileError ? (
+          <p>error</p>
+        ) : searchProfileLoading ? (
+          <p>loading</p>
+        ) : profiles?.length ? (
+          profiles.map(p => <p key={p.id}>{p.username}</p>)
+        ) : (
+          <p>No users found</p>
+        )
       ) : null}
     </Layout>
   );

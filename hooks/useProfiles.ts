@@ -1,10 +1,10 @@
 import { ApolloError, useLazyQuery, useQuery } from '@apollo/client';
 import { User } from '@prisma/client';
 import profileByUsernameGql from 'gql/profileByUsername.gql';
+import profilesByUsernameGql from 'gql/profilesByUsername.gql';
 import { useCallback, useMemo } from 'react';
 
 type ProfileQueryHookReturn = {
-  getProfileByUsername?: (username: string) => Promise<void>,
   profile: User,
   loading: boolean,
   error: ApolloError
@@ -25,9 +25,16 @@ export const useProfileByUsername = ({
   return { profile, loading, error };
 };
 
-export const useProfileByUsernameLazy = (): ProfileQueryHookReturn => {
+type ProfilesQueryHookReturn = {
+  getProfileByUsername: (username: string) => Promise<void>,
+  profiles: User[],
+  loading: boolean,
+  error: ApolloError
+};
+
+export const useProfileByUsernameLazy = (): ProfilesQueryHookReturn => {
   const [getProfileByUsernameQuery, { data, loading, error }] = useLazyQuery(
-    profileByUsernameGql
+    profilesByUsernameGql
   );
 
   const getProfileByUsername = useCallback(
@@ -42,7 +49,7 @@ export const useProfileByUsernameLazy = (): ProfileQueryHookReturn => {
     [getProfileByUsernameQuery]
   );
 
-  const profile = useMemo(() => data?.user, [data?.user]);
+  const profiles = useMemo(() => data?.users, [data?.users]);
 
-  return { getProfileByUsername, profile, loading, error };
+  return { getProfileByUsername, profiles, loading, error };
 };
