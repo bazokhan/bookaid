@@ -1,3 +1,4 @@
+import { exposeAllFields } from 'helpers/exposeAllFields';
 import { objectType } from 'nexus';
 
 export const User = objectType({
@@ -6,5 +7,12 @@ export const User = objectType({
     t.model.id();
     t.model.username();
     t.model.email();
+  }
+});
+
+export const Permission = objectType({
+  name: 'Permission',
+  definition(t) {
+    exposeAllFields(t);
   }
 });

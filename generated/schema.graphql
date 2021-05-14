@@ -9,6 +9,7 @@ type Account {
   id: Int!
   name: String!
   owner: User!
+  permissions(after: PermissionWhereUniqueInput, before: PermissionWhereUniqueInput, first: Int, last: Int): [Permission!]!
 }
 
 type AccountCategory {
@@ -1224,11 +1225,14 @@ type Mutation {
   createOneAccount(data: AccountCreateInput!): Account!
   createOneCategory(data: CategoryCreateInput!): Category!
   createOneClient(data: ClientCreateInput!): Client!
+  createOnePermission(data: PermissionCreateInput!): Permission!
   createOneTx(data: TxCreateInput!): Tx!
   createOneUser(data: UserCreateInput!): User!
+  deleteOnePermission(where: PermissionWhereUniqueInput!): Permission
   updateOneAccount(data: AccountUpdateInput!, where: AccountWhereUniqueInput!): Account
   updateOneCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   updateOneClient(data: ClientUpdateInput!, where: ClientWhereUniqueInput!): Client
+  updateOnePermission(data: PermissionUpdateInput!, where: PermissionWhereUniqueInput!): Permission
   updateOneTx(data: TxUpdateInput!, where: TxWhereUniqueInput!): Tx
   updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
 }
@@ -1341,6 +1345,25 @@ input NullableStringFieldUpdateOperationsInput {
   set: String
 }
 
+type Permission {
+  account: Account!
+  accountId: Int!
+  createdAt: DateTime!
+  id: Int!
+  role: Role!
+  updatedAt: DateTime!
+  user: User!
+  userId: Int!
+}
+
+input PermissionCreateInput {
+  account: AccountCreateNestedOneWithoutPermissionsInput!
+  createdAt: DateTime
+  role: Role!
+  updatedAt: DateTime
+  user: UserCreateNestedOneWithoutPermissionsInput!
+}
+
 input PermissionCreateManyAccountInput {
   createdAt: DateTime
   id: Int
@@ -1427,6 +1450,14 @@ input PermissionScalarWhereInput {
   userId: IntFilter
 }
 
+input PermissionUpdateInput {
+  account: AccountUpdateOneRequiredWithoutPermissionsInput
+  createdAt: DateTimeFieldUpdateOperationsInput
+  role: EnumRoleFieldUpdateOperationsInput
+  updatedAt: DateTimeFieldUpdateOperationsInput
+  user: UserUpdateOneRequiredWithoutPermissionsInput
+}
+
 input PermissionUpdateManyMutationInput {
   createdAt: DateTimeFieldUpdateOperationsInput
   role: EnumRoleFieldUpdateOperationsInput
@@ -1507,6 +1538,11 @@ input PermissionUpsertWithWhereUniqueWithoutUserInput {
   where: PermissionWhereUniqueInput!
 }
 
+input PermissionUser_accCompoundUniqueInput {
+  accountId: Int!
+  userId: Int!
+}
+
 input PermissionWhereInput {
   AND: [PermissionWhereInput!]
   NOT: [PermissionWhereInput!]
@@ -1523,6 +1559,7 @@ input PermissionWhereInput {
 
 input PermissionWhereUniqueInput {
   id: Int
+  user_acc: PermissionUser_accCompoundUniqueInput
 }
 
 type Query {

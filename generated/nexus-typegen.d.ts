@@ -1121,6 +1121,13 @@ export interface NexusGenInputs {
   NullableStringFieldUpdateOperationsInput: { // input type
     set?: string | null; // String
   }
+  PermissionCreateInput: { // input type
+    account: NexusGenInputs['AccountCreateNestedOneWithoutPermissionsInput']; // AccountCreateNestedOneWithoutPermissionsInput!
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    role: NexusGenEnums['Role']; // Role!
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    user: NexusGenInputs['UserCreateNestedOneWithoutPermissionsInput']; // UserCreateNestedOneWithoutPermissionsInput!
+  }
   PermissionCreateManyAccountInput: { // input type
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     id?: number | null; // Int
@@ -1194,6 +1201,13 @@ export interface NexusGenInputs {
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     userId?: NexusGenInputs['IntFilter'] | null; // IntFilter
   }
+  PermissionUpdateInput: { // input type
+    account?: NexusGenInputs['AccountUpdateOneRequiredWithoutPermissionsInput'] | null; // AccountUpdateOneRequiredWithoutPermissionsInput
+    createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    role?: NexusGenInputs['EnumRoleFieldUpdateOperationsInput'] | null; // EnumRoleFieldUpdateOperationsInput
+    updatedAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
+    user?: NexusGenInputs['UserUpdateOneRequiredWithoutPermissionsInput'] | null; // UserUpdateOneRequiredWithoutPermissionsInput
+  }
   PermissionUpdateManyMutationInput: { // input type
     createdAt?: NexusGenInputs['DateTimeFieldUpdateOperationsInput'] | null; // DateTimeFieldUpdateOperationsInput
     role?: NexusGenInputs['EnumRoleFieldUpdateOperationsInput'] | null; // EnumRoleFieldUpdateOperationsInput
@@ -1263,6 +1277,10 @@ export interface NexusGenInputs {
     update: NexusGenInputs['PermissionUpdateWithoutUserInput']; // PermissionUpdateWithoutUserInput!
     where: NexusGenInputs['PermissionWhereUniqueInput']; // PermissionWhereUniqueInput!
   }
+  PermissionUser_accCompoundUniqueInput: { // input type
+    accountId: number; // Int!
+    userId: number; // Int!
+  }
   PermissionWhereInput: { // input type
     AND?: NexusGenInputs['PermissionWhereInput'][] | null; // [PermissionWhereInput!]
     NOT?: NexusGenInputs['PermissionWhereInput'][] | null; // [PermissionWhereInput!]
@@ -1278,6 +1296,7 @@ export interface NexusGenInputs {
   }
   PermissionWhereUniqueInput: { // input type
     id?: number | null; // Int
+    user_acc?: NexusGenInputs['PermissionUser_accCompoundUniqueInput'] | null; // PermissionUser_accCompoundUniqueInput
   }
   StringFieldUpdateOperationsInput: { // input type
     set?: string | null; // String
@@ -1920,6 +1939,14 @@ export interface NexusGenObjects {
     name: string; // String!
   }
   Mutation: {};
+  Permission: { // root type
+    accountId: number; // Int!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    role: NexusGenEnums['Role']; // Role!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+    userId: number; // Int!
+  }
   Query: {};
   Tx: { // root type
     amount: number; // Int!
@@ -1950,6 +1977,7 @@ export interface NexusGenFieldTypes {
     id: number; // Int!
     name: string; // String!
     owner: NexusGenRootTypes['User']; // User!
+    permissions: NexusGenRootTypes['Permission'][]; // [Permission!]!
   }
   AccountCategory: { // field return type
     account: NexusGenRootTypes['Account']; // Account!
@@ -1981,13 +2009,26 @@ export interface NexusGenFieldTypes {
     createOneAccount: NexusGenRootTypes['Account']; // Account!
     createOneCategory: NexusGenRootTypes['Category']; // Category!
     createOneClient: NexusGenRootTypes['Client']; // Client!
+    createOnePermission: NexusGenRootTypes['Permission']; // Permission!
     createOneTx: NexusGenRootTypes['Tx']; // Tx!
     createOneUser: NexusGenRootTypes['User']; // User!
+    deleteOnePermission: NexusGenRootTypes['Permission'] | null; // Permission
     updateOneAccount: NexusGenRootTypes['Account'] | null; // Account
     updateOneCategory: NexusGenRootTypes['Category'] | null; // Category
     updateOneClient: NexusGenRootTypes['Client'] | null; // Client
+    updateOnePermission: NexusGenRootTypes['Permission'] | null; // Permission
     updateOneTx: NexusGenRootTypes['Tx'] | null; // Tx
     updateOneUser: NexusGenRootTypes['User'] | null; // User
+  }
+  Permission: { // field return type
+    account: NexusGenRootTypes['Account']; // Account!
+    accountId: number; // Int!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: number; // Int!
+    role: NexusGenEnums['Role']; // Role!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+    user: NexusGenRootTypes['User']; // User!
+    userId: number; // Int!
   }
   Query: { // field return type
     account: NexusGenRootTypes['Account'] | null; // Account
@@ -2023,6 +2064,7 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     name: 'String'
     owner: 'User'
+    permissions: 'Permission'
   }
   AccountCategory: { // field return type name
     account: 'Account'
@@ -2054,13 +2096,26 @@ export interface NexusGenFieldTypeNames {
     createOneAccount: 'Account'
     createOneCategory: 'Category'
     createOneClient: 'Client'
+    createOnePermission: 'Permission'
     createOneTx: 'Tx'
     createOneUser: 'User'
+    deleteOnePermission: 'Permission'
     updateOneAccount: 'Account'
     updateOneCategory: 'Category'
     updateOneClient: 'Client'
+    updateOnePermission: 'Permission'
     updateOneTx: 'Tx'
     updateOneUser: 'User'
+  }
+  Permission: { // field return type name
+    account: 'Account'
+    accountId: 'Int'
+    createdAt: 'DateTime'
+    id: 'Int'
+    role: 'Role'
+    updatedAt: 'DateTime'
+    user: 'User'
+    userId: 'Int'
   }
   Query: { // field return type name
     account: 'Account'
@@ -2102,6 +2157,12 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
     }
+    permissions: { // args
+      after?: NexusGenInputs['PermissionWhereUniqueInput'] | null; // PermissionWhereUniqueInput
+      before?: NexusGenInputs['PermissionWhereUniqueInput'] | null; // PermissionWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+    }
   }
   Mutation: {
     createOneAccount: { // args
@@ -2113,11 +2174,17 @@ export interface NexusGenArgTypes {
     createOneClient: { // args
       data: NexusGenInputs['ClientCreateInput']; // ClientCreateInput!
     }
+    createOnePermission: { // args
+      data: NexusGenInputs['PermissionCreateInput']; // PermissionCreateInput!
+    }
     createOneTx: { // args
       data: NexusGenInputs['TxCreateInput']; // TxCreateInput!
     }
     createOneUser: { // args
       data: NexusGenInputs['UserCreateInput']; // UserCreateInput!
+    }
+    deleteOnePermission: { // args
+      where: NexusGenInputs['PermissionWhereUniqueInput']; // PermissionWhereUniqueInput!
     }
     updateOneAccount: { // args
       data: NexusGenInputs['AccountUpdateInput']; // AccountUpdateInput!
@@ -2130,6 +2197,10 @@ export interface NexusGenArgTypes {
     updateOneClient: { // args
       data: NexusGenInputs['ClientUpdateInput']; // ClientUpdateInput!
       where: NexusGenInputs['ClientWhereUniqueInput']; // ClientWhereUniqueInput!
+    }
+    updateOnePermission: { // args
+      data: NexusGenInputs['PermissionUpdateInput']; // PermissionUpdateInput!
+      where: NexusGenInputs['PermissionWhereUniqueInput']; // PermissionWhereUniqueInput!
     }
     updateOneTx: { // args
       data: NexusGenInputs['TxUpdateInput']; // TxUpdateInput!

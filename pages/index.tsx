@@ -11,7 +11,9 @@ const Home: React.FC = () => {
   const {
     createAccount,
     createAccountLoading,
-    createAccountError
+    createAccountError,
+    createAccountPermission,
+    deleteAccountPermission
   } = useAccountMutations({ user });
   const { myAccounts, loading, error } = useMyAccounts({ user });
   const onSubmit = useCallback(
@@ -49,7 +51,25 @@ const Home: React.FC = () => {
       ) : loading ? (
         <div>Loading...</div>
       ) : myAccounts?.length ? (
-        myAccounts.map(account => <p key={account.id}>{account.name}</p>)
+        myAccounts.map(account => (
+          <div key={account.id}>
+            <p>{account.name}</p>
+            {account.permissions?.length ? (
+              account.permissions.map(p => (
+                <div key={p.id}>
+                  <button onClick={() => deleteAccountPermission(p)}>
+                    {p.user?.username}
+                  </button>
+                  <button onClick={() => deleteAccountPermission(p)}>
+                    {p.role}
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p>Not shared yet</p>
+            )}
+          </div>
+        ))
       ) : (
         <div>No accounts yet</div>
       )}
@@ -76,7 +96,14 @@ const Home: React.FC = () => {
         ) : searchProfileLoading ? (
           <p>loading</p>
         ) : profiles?.length ? (
-          profiles.map(p => <p key={p.id}>{p.username}</p>)
+          profiles.map(p => (
+            <button
+              key={p.id}
+              onClick={() => createAccountPermission(p, myAccounts?.[0])}
+            >
+              {p.username}
+            </button>
+          ))
         ) : (
           <p>No users found</p>
         )

@@ -10,6 +10,7 @@ export const Account = objectType({
     t.model.client();
     t.model.clientsVisible();
     t.model.categoriesVisible();
+    t.model.permissions();
   }
 });
 

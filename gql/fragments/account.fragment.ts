@@ -27,5 +27,13 @@ export default gql`
         name
       }
     }
+    permissions {
+      id
+      user {
+        id
+        username
+      }
+      role
+    }
   }
 `;
