@@ -5,6 +5,7 @@ import { useAccountMutations, useMyAccounts } from 'hooks/useAccounts';
 import { withApollo } from 'lib/WithApollo';
 import { useProfileByUsernameLazy } from 'hooks/useProfiles';
 import { useDebounce } from 'use-debounce/lib';
+import Link from 'next/link';
 
 const Home: React.FC = () => {
   const user = useUser({ redirectTo: '/login' });
@@ -13,6 +14,7 @@ const Home: React.FC = () => {
     createAccountLoading,
     createAccountError,
     createAccountPermission,
+    updateAccountPermission,
     deleteAccountPermission
   } = useAccountMutations({ user });
   const { myAccounts, loading, error } = useMyAccounts({ user });
@@ -43,6 +45,19 @@ const Home: React.FC = () => {
     search();
   }, [debouncedSearchValue, getProfileByUsername]);
 
+  const onChangeRole = useCallback(
+    async (permission, role) => {
+      if (role === 'VIEWER') {
+        await updateAccountPermission(permission, 'EDITOR');
+      } else if (role === 'EDITOR') {
+        await updateAccountPermission(permission, 'ADMIN');
+      } else if (role === 'ADMIN') {
+        await updateAccountPermission(permission, 'VIEWER');
+      }
+    },
+    [updateAccountPermission]
+  );
+
   return (
     <Layout>
       <h1>{user?.username}</h1>
@@ -53,14 +68,16 @@ const Home: React.FC = () => {
       ) : myAccounts?.length ? (
         myAccounts.map(account => (
           <div key={account.id}>
-            <p>{account.name}</p>
+            <Link href={`/${account.id}`}>
+              <a>{account.name}</a>
+            </Link>
             {account.permissions?.length ? (
               account.permissions.map(p => (
                 <div key={p.id}>
                   <button onClick={() => deleteAccountPermission(p)}>
                     {p.user?.username}
                   </button>
-                  <button onClick={() => deleteAccountPermission(p)}>
+                  <button onClick={() => onChangeRole(p, p.role)}>
                     {p.role}
                   </button>
                 </div>

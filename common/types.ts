@@ -1,3 +1,5 @@
+import { Account, User, Permission } from '@prisma/client';
+
 export interface LoginForm extends HTMLInputElement {
   username: HTMLInputElement;
   password: HTMLInputElement;
@@ -5,12 +7,9 @@ export interface LoginForm extends HTMLInputElement {
   email?: HTMLInputElement;
 }
 
-export type User = {
-  id: number,
-  username?: string
-};
-
-export type Account = {
-  id: number,
-  name?: string
-};
+export interface PermissionData extends Permission {
+  user?: User;
+}
+export interface AccountData extends Account {
+  permissions?: PermissionData[];
+}

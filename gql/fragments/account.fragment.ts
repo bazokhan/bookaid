@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import ClientFragment from './client.fragment';
 
 export default gql`
   fragment AccountFragment on Account {
@@ -10,14 +11,12 @@ export default gql`
       email
     }
     client {
-      id
-      name
+      ...ClientFragment
     }
     clientsVisible {
       id
       client {
-        id
-        name
+        ...ClientFragment
       }
     }
     categoriesVisible {
@@ -36,4 +35,5 @@ export default gql`
       role
     }
   }
+  ${ClientFragment}
 `;

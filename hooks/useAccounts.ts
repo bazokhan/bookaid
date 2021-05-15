@@ -1,13 +1,37 @@
 import { ApolloError, useMutation, useQuery } from '@apollo/client';
 import { Account, User, Permission } from '@prisma/client';
+import { AccountData } from 'common/types';
+import accountByIDGql from 'gql/accountByID.gql';
 import createAccountGql from 'gql/createAccount.gql';
 import createAccountPermissionGql from 'gql/createAccountPermission.gql';
 import deleteAccountPermissionGql from 'gql/deleteAccountPermission.gql';
 import myAccountsGql from 'gql/myAccounts.gql';
+import updateAccountPermissionGql from 'gql/updateAccountPermission.gql';
 import { useCallback, useMemo } from 'react';
 
+type AccountByIDQueryHookReturn = {
+  account: AccountData[],
+  loading: boolean,
+  error: ApolloError
+};
+
+export const useAccountByID = ({
+  accountID
+}: {
+  accountID: number
+}): AccountByIDQueryHookReturn => {
+  const { data, loading, error } = useQuery(accountByIDGql, {
+    variables: { accountID },
+    skip: !accountID
+  });
+
+  const account = useMemo(() => data?.account, [data?.account]);
+
+  return { account, loading, error };
+};
+
 type MyAccountsQueryHookReturn = {
-  myAccounts: Account[],
+  myAccounts: AccountData[],
   loading: boolean,
   error: ApolloError
 };
@@ -34,6 +58,12 @@ type AccountMutationHookReturn = {
   createAccountPermission: (profile: User, account: Account) => Promise<void>,
   createPermissionLoading: boolean,
   createPermissionError: ApolloError,
+  updateAccountPermission: (
+    permission: Permission,
+    role: string
+  ) => Promise<void>,
+  updatePermissionLoading: boolean,
+  updatePermissionError: ApolloError,
   deleteAccountPermission: (permission: Permission) => Promise<void>,
   deletePermissionLoading: boolean,
   deletePermissionError: ApolloError
@@ -85,6 +115,27 @@ export const useAccountMutations = ({
   );
 
   const [
+    updateAccountPermissionMutation,
+    { loading: updatePermissionLoading, error: updatePermissionError }
+  ] = useMutation(updateAccountPermissionGql, {
+    refetchQueries: [{ query: myAccountsGql, variables: { userID: user?.id } }]
+  });
+
+  const updateAccountPermission = useCallback(
+    async (permission, role) => {
+      try {
+        await updateAccountPermissionMutation({
+          variables: { permissionID: permission?.id, role }
+        });
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      }
+    },
+    [updateAccountPermissionMutation]
+  );
+
+  const [
     deleteAccountPermissionMutation,
     { loading: deletePermissionLoading, error: deletePermissionError }
   ] = useMutation(deleteAccountPermissionGql, {
@@ -112,6 +163,9 @@ export const useAccountMutations = ({
     createAccountPermission,
     createPermissionLoading,
     createPermissionError,
+    updateAccountPermission,
+    updatePermissionLoading,
+    updatePermissionError,
     deleteAccountPermission,
     deletePermissionLoading,
     deletePermissionError

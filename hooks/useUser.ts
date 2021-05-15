@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
 import useSWR from 'swr';
-import { User } from 'lib/user';
+import { User } from '@prisma/client';
 
 const fetcher = (url: string) =>
   fetch(url)

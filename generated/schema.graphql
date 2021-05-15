@@ -877,8 +877,12 @@ input CategoryWhereUniqueInput {
 }
 
 type Client {
+  account: Account
+  asPayee(after: TxWhereUniqueInput, before: TxWhereUniqueInput, first: Int, last: Int): [Tx!]!
+  asPayer(after: TxWhereUniqueInput, before: TxWhereUniqueInput, first: Int, last: Int): [Tx!]!
   id: Int!
   name: String!
+  txes: [Tx]
 }
 
 input ClientCreateInput {
@@ -1628,6 +1632,8 @@ input StringNullableFilter {
 type Tx {
   amount: Int!
   category: Category
+  createdBy: User
+  date: DateTime
   id: Int!
   payee: Client!
   payer: Client!

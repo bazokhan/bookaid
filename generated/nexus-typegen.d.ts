@@ -1950,6 +1950,7 @@ export interface NexusGenObjects {
   Query: {};
   Tx: { // root type
     amount: number; // Int!
+    date?: NexusGenScalars['DateTime'] | null; // DateTime
     id: number; // Int!
   }
   User: { // root type
@@ -2002,8 +2003,12 @@ export interface NexusGenFieldTypes {
     name: string; // String!
   }
   Client: { // field return type
+    account: NexusGenRootTypes['Account'] | null; // Account
+    asPayee: NexusGenRootTypes['Tx'][]; // [Tx!]!
+    asPayer: NexusGenRootTypes['Tx'][]; // [Tx!]!
     id: number; // Int!
     name: string; // String!
+    txes: Array<NexusGenRootTypes['Tx'] | null> | null; // [Tx]
   }
   Mutation: { // field return type
     createOneAccount: NexusGenRootTypes['Account']; // Account!
@@ -2045,6 +2050,8 @@ export interface NexusGenFieldTypes {
   Tx: { // field return type
     amount: number; // Int!
     category: NexusGenRootTypes['Category'] | null; // Category
+    createdBy: NexusGenRootTypes['User'] | null; // User
+    date: NexusGenScalars['DateTime'] | null; // DateTime
     id: number; // Int!
     payee: NexusGenRootTypes['Client']; // Client!
     payer: NexusGenRootTypes['Client']; // Client!
@@ -2089,8 +2096,12 @@ export interface NexusGenFieldTypeNames {
     name: 'String'
   }
   Client: { // field return type name
+    account: 'Account'
+    asPayee: 'Tx'
+    asPayer: 'Tx'
     id: 'Int'
     name: 'String'
+    txes: 'Tx'
   }
   Mutation: { // field return type name
     createOneAccount: 'Account'
@@ -2132,6 +2143,8 @@ export interface NexusGenFieldTypeNames {
   Tx: { // field return type name
     amount: 'Int'
     category: 'Category'
+    createdBy: 'User'
+    date: 'DateTime'
     id: 'Int'
     payee: 'Client'
     payer: 'Client'
@@ -2160,6 +2173,20 @@ export interface NexusGenArgTypes {
     permissions: { // args
       after?: NexusGenInputs['PermissionWhereUniqueInput'] | null; // PermissionWhereUniqueInput
       before?: NexusGenInputs['PermissionWhereUniqueInput'] | null; // PermissionWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+    }
+  }
+  Client: {
+    asPayee: { // args
+      after?: NexusGenInputs['TxWhereUniqueInput'] | null; // TxWhereUniqueInput
+      before?: NexusGenInputs['TxWhereUniqueInput'] | null; // TxWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+    }
+    asPayer: { // args
+      after?: NexusGenInputs['TxWhereUniqueInput'] | null; // TxWhereUniqueInput
+      before?: NexusGenInputs['TxWhereUniqueInput'] | null; // TxWhereUniqueInput
       first?: number | null; // Int
       last?: number | null; // Int
     }
