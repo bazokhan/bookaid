@@ -3,7 +3,7 @@ import nextConnect from 'next-connect';
 import { localStrategy } from 'lib/password-local';
 import { setLoginSession } from 'lib/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { User } from 'lib/user';
+import { User } from '@prisma/client';
 
 const authenticate = (
   method: string,

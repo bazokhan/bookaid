@@ -1,7 +1,7 @@
+import { User } from '@prisma/client';
 import Iron from '@hapi/iron';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MAX_AGE, setTokenCookie, getTokenCookie } from './auth-cookies';
-import { User } from './user';
 
 export const setLoginSession = async (
   res: NextApiResponse,

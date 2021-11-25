@@ -1,5 +1,6 @@
+import { User } from '@prisma/client';
 import Local from 'passport-local';
-import { findUser, User, validatePassword } from './user';
+import { findUser, validatePassword } from './user';
 
 export const localStrategy = new Local.Strategy(
   (
