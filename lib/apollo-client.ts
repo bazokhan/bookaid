@@ -1,98 +1,57 @@
+// https://github.com/vercel/next.js/tree/master/examples/api-routes-apollo-server-and-client
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
 import {
   ApolloClient,
-  HttpLink,
   InMemoryCache,
   NormalizedCacheObject
 } from '@apollo/client';
-import { NextPageContext } from 'next';
-import { AppContext } from 'next/app';
+import { useMemo } from 'react';
 
-export interface NextCtx extends NextPageContext, AppContext {
-  apolloClient?: ApolloClient<NormalizedCacheObject>;
-  apolloState?: NormalizedCacheObject;
-  ctx: NextCtx;
-}
+let apolloClient: ApolloClient<NormalizedCacheObject>;
 
-// On the client, we store the Apollo Client in the following variable.
-// This prevents the client from reinitializing between page transitions.
-let globalApolloClient = null;
-
-const createApolloClient = (
-  initialState: NormalizedCacheObject,
-  ctx: NextCtx
-): ApolloClient<NormalizedCacheObject> =>
-  new ApolloClient({
-    ssrMode: Boolean(ctx),
-    link: new HttpLink({
-      //   uri: process.env.GRAPHQL_URI, // must be absolute
-      uri: '/api/graphql',
-      credentials: 'same-origin',
-      fetch
-    }),
-    cache: new InMemoryCache().restore(initialState)
-  });
-
-/**
- * Always creates a new apollo client on the server
- * Creates or reuses apollo client in the browser.
- */
-export const initApolloClient = (
-  initialState: NormalizedCacheObject,
-  ctx: NextCtx
-): ApolloClient<NormalizedCacheObject> => {
-  // Make sure to create a new client for every server-side request so that data
-  // isn't shared between connections (which would be bad)
+const createIsomorphLink = () => {
   if (typeof window === 'undefined') {
-    return createApolloClient(initialState, ctx);
+    const { SchemaLink } = require('@apollo/client/link/schema');
+    const { schema } = require('../pages/api/graphql/schema');
+    return new SchemaLink({ schema });
   }
-
-  // Reuse client on the client-side
-  if (!globalApolloClient) {
-    globalApolloClient = createApolloClient(initialState, ctx);
-  }
-
-  return globalApolloClient;
+  const { HttpLink } = require('@apollo/client/link/http');
+  return new HttpLink({
+    uri: '/api/graphql',
+    credentials: 'same-origin'
+  });
 };
 
-/**
- * Installs the Apollo Client on NextPageContext
- * or NextAppContext. Useful if you want to use apolloClient
- * inside getStaticProps, getStaticPaths or getServerSideProps
- * @param {NextPageContext | NextAppContext} ctx
- */
-export const initOnContext = (ctx: NextCtx): NextCtx => {
-  const inAppContext = Boolean(ctx.ctx);
+const createApolloClient = (): ApolloClient<NormalizedCacheObject> =>
+  new ApolloClient({
+    ssrMode: typeof window === 'undefined',
+    link: createIsomorphLink(),
+    cache: new InMemoryCache()
+  });
 
-  // We consider installing `withApollo({ ssr: true })` on global App level
-  // as antipattern since it disables project wide Automatic Static Optimization.
-  if (process.env.NODE_ENV === 'development') {
-    if (inAppContext) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        'Warning: You have opted-out of Automatic Static Optimization due to `withApollo` in `pages/_app`.\n' +
-          'Read more: https://err.sh/next.js/opt-out-auto-static-optimization\n'
-      );
-    }
+export const initializeApollo = (
+  initialState: NormalizedCacheObject = null
+): ApolloClient<NormalizedCacheObject> => {
+  const _apolloClient = apolloClient ?? createApolloClient();
+
+  // If your page has Next.js data fetching methods that use Apollo Client, the initial state
+  // gets hydrated here
+  if (initialState) {
+    _apolloClient.cache.restore(initialState);
   }
+  // For SSG and SSR always create a new Apollo Client
+  if (typeof window === 'undefined') return _apolloClient;
+  // Create the Apollo Client once in the client
+  if (!apolloClient) apolloClient = _apolloClient;
 
-  // Initialize ApolloClient if not already done
-  const apolloClient =
-    ctx.apolloClient ||
-    initApolloClient(ctx.apolloState || {}, inAppContext ? ctx.ctx : ctx);
+  return _apolloClient;
+};
 
-  // We send the Apollo Client as a prop to the component to avoid calling initApollo() twice in the server.
-  // Otherwise, the component would have to call initApollo() again but this
-  // time without the context. Once that happens, the following code will make sure we send
-  // the prop as `null` to the browser.
-  //   apolloClient.toJSON = () => null;
-
-  // Add apolloClient to NextPageContext & NextAppContext.
-  // This allows us to consume the apolloClient inside our
-  // custom `getInitialProps({ apolloClient })`.
-  ctx.apolloClient = apolloClient;
-  if (inAppContext) {
-    ctx.ctx.apolloClient = apolloClient;
-  }
-
-  return ctx;
+export const useApollo = (
+  initialState: NormalizedCacheObject
+): ApolloClient<NormalizedCacheObject> => {
+  const store = useMemo(() => initializeApollo(initialState), [initialState]);
+  return store;
 };

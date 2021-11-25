@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import { useUser } from 'hooks/useUser';
 import { useAccountMutations, useMyAccounts } from 'hooks/useAccounts';
-import { withApollo } from 'lib/WithApollo';
 import { useProfileByUsernameLazy } from 'hooks/useProfiles';
 import { useDebounce } from 'use-debounce/lib';
 import Link from 'next/link';
+import Title from 'components/Typography/Title';
+import DataWrapper from 'components/States/DataWrapper';
 
 const Home: React.FC = () => {
   const user = useUser({ redirectTo: '/login' });
@@ -60,13 +61,14 @@ const Home: React.FC = () => {
 
   return (
     <Layout>
-      <h1>{user?.username}</h1>
-      {error ? (
-        <div>Error</div>
-      ) : loading ? (
-        <div>Loading...</div>
-      ) : myAccounts?.length ? (
-        myAccounts.map(account => (
+      <Title>{user?.username}</Title>
+      <DataWrapper
+        error={error}
+        loading={loading}
+        data={myAccounts}
+        emptyTitle="No accounts yet!"
+      >
+        {myAccounts?.map(account => (
           <div key={account.id}>
             <Link href={`/${account.id}`}>
               <a>{account.name}</a>
@@ -86,10 +88,9 @@ const Home: React.FC = () => {
               <p>Not shared yet</p>
             )}
           </div>
-        ))
-      ) : (
-        <div>No accounts yet</div>
-      )}
+        ))}
+      </DataWrapper>
+
       <h2>Create account</h2>
       {createAccountError ? <p>{createAccountError?.message}</p> : null}
       <form onSubmit={onSubmit}>
@@ -108,25 +109,24 @@ const Home: React.FC = () => {
         onChange={e => setSearchValue(e.target.value)}
       />
       {debouncedSearchValue ? (
-        searchProfileError ? (
-          <p>error</p>
-        ) : searchProfileLoading ? (
-          <p>loading</p>
-        ) : profiles?.length ? (
-          profiles.map(p => (
+        <DataWrapper
+          error={searchProfileError}
+          loading={searchProfileLoading}
+          data={profiles}
+          emptyTitle="No users found!"
+        >
+          {profiles?.map(p => (
             <button
               key={p.id}
               onClick={() => createAccountPermission(p, myAccounts?.[0])}
             >
               {p.username}
             </button>
-          ))
-        ) : (
-          <p>No users found</p>
-        )
+          ))}
+        </DataWrapper>
       ) : null}
     </Layout>
   );
 };
 
-export default withApollo({ ssr: false })(Home);
+export default Home;
