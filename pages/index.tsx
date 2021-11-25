@@ -4,9 +4,13 @@ import { useUser } from 'hooks/useUser';
 import { useAccountMutations, useMyAccounts } from 'hooks/useAccounts';
 import { useProfileByUsernameLazy } from 'hooks/useProfiles';
 import { useDebounce } from 'use-debounce/lib';
-import Link from 'next/link';
 import Title from 'components/Typography/Title';
 import DataWrapper from 'components/States/DataWrapper';
+import Input from 'components/Form/Input';
+import Button from 'components/Button/Button';
+import LinkButton from 'components/Button/LinkButton';
+import ErrorMessage from 'components/States/ErrorMessage';
+import Stack from 'components/Layout/Stack';
 
 const Home: React.FC = () => {
   const user = useUser({ redirectTo: '/login' });
@@ -62,69 +66,84 @@ const Home: React.FC = () => {
   return (
     <Layout>
       <Title>{user?.username}</Title>
-      <DataWrapper
-        error={error}
-        loading={loading}
-        data={myAccounts}
-        emptyTitle="No accounts yet!"
-      >
-        {myAccounts?.map(account => (
-          <div key={account.id}>
-            <Link href={`/${account.id}`}>
-              <a>{account.name}</a>
-            </Link>
-            {account.permissions?.length ? (
-              account.permissions.map(p => (
-                <div key={p.id}>
-                  <button onClick={() => deleteAccountPermission(p)}>
-                    {p.user?.username}
-                  </button>
-                  <button onClick={() => onChangeRole(p, p.role)}>
-                    {p.role}
-                  </button>
-                </div>
-              ))
-            ) : (
-              <p>Not shared yet</p>
-            )}
-          </div>
-        ))}
-      </DataWrapper>
-
-      <h2>Create account</h2>
-      {createAccountError ? <p>{createAccountError?.message}</p> : null}
-      <form onSubmit={onSubmit}>
-        <input
-          name="accountName"
-          placeholder="account name"
-          disabled={createAccountLoading}
-        />
-        <button type="submit" disabled={createAccountLoading}>
-          {createAccountLoading ? 'loading..' : 'Create'}
-        </button>
-      </form>
-      <p>==============================</p>
-      <input
-        placeholder="search profiles"
-        onChange={e => setSearchValue(e.target.value)}
-      />
-      {debouncedSearchValue ? (
+      <Stack>
+        <Title>My accounts</Title>
         <DataWrapper
-          error={searchProfileError}
-          loading={searchProfileLoading}
-          data={profiles}
-          emptyTitle="No users found!"
+          error={error}
+          loading={loading}
+          data={myAccounts}
+          emptyTitle="No accounts yet!"
         >
-          {profiles?.map(p => (
-            <button
-              key={p.id}
-              onClick={() => createAccountPermission(p, myAccounts?.[0])}
+          {myAccounts?.map(account => (
+            <div
+              key={account.id}
+              className="border border-gray-700 border-dashed rounded-default p-4"
             >
-              {p.username}
-            </button>
+              <LinkButton href={`/${account.id}`}>{account.name}</LinkButton>
+              <DataWrapper
+                error={error}
+                loading={loading}
+                data={account.permissions}
+                emptyTitle="Not shared yet!"
+              >
+                {account.permissions?.map(p => (
+                  <div key={p.id} className="flex justify-start items-center">
+                    <p>Users with permissions: </p>
+                    <Button onClick={() => deleteAccountPermission(p)}>
+                      {p.user?.username}
+                    </Button>
+                    <p>Role: </p>
+                    <Button onClick={() => onChangeRole(p, p.role)}>
+                      {p.role}
+                    </Button>
+                  </div>
+                ))}
+              </DataWrapper>
+            </div>
           ))}
         </DataWrapper>
-      ) : null}
+      </Stack>
+      <Stack>
+        {createAccountError ? (
+          <ErrorMessage error={createAccountError} />
+        ) : null}
+        <form onSubmit={onSubmit}>
+          <Input
+            label="Create account"
+            name="accountName"
+            placeholder="account name"
+            disabled={createAccountLoading}
+          />
+          <Button type="submit" loading={createAccountLoading}>
+            Create Account
+          </Button>
+        </form>
+      </Stack>
+      <Stack>
+        <Input
+          label="Search profiles to share your account with"
+          name="Search"
+          placeholder="search profiles"
+          onChange={e => setSearchValue(e.target.value)}
+        />
+        {debouncedSearchValue ? (
+          <DataWrapper
+            error={searchProfileError}
+            loading={searchProfileLoading}
+            data={profiles}
+            emptyTitle="No users found!"
+          >
+            {profiles?.map(p => (
+              <Button
+                key={p.id}
+                onClick={() => createAccountPermission(p, myAccounts?.[0])}
+              >
+                {p.username}
+              </Button>
+            ))}
+          </DataWrapper>
+        ) : null}
+      </Stack>
     </Layout>
   );
 };

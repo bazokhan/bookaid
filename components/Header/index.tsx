@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useUser } from 'hooks/useUser';
 import Drawer from 'components/Drawer';
+import LinkButton from 'components/Button/LinkButton';
+import Button from 'components/Button/Button';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,15 +13,11 @@ const Header: React.FC = () => {
       <nav className="w-full">
         <ul className="flex items-center justify-between w-full flex-nowrap">
           <li>
-            <Link href="/">
-              <a>
-                <p>Bookaid</p>
-              </a>
-            </Link>
+            <LinkButton href="/">Bookaid</LinkButton>
           </li>
           {user ? (
             <li>
-              <button
+              <Button
                 className="flex content-center"
                 onClick={() => setIsOpen(prev => !prev)}
               >
@@ -35,13 +32,11 @@ const Header: React.FC = () => {
                   alt="menu"
                   className="ml-2 w-8"
                 />
-              </button>
+              </Button>
             </li>
           ) : (
             <li className="mr-3 hover:text-main-3 py-2 px-4 rounded-default">
-              <Link href="/login">
-                <a>Login / Signup</a>
-              </Link>
+              <LinkButton href="/login">Login</LinkButton>
             </li>
           )}
         </ul>

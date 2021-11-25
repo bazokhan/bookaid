@@ -8,9 +8,5 @@
 }
 
 body {
-  @apply font-sans w-screen h-screen overflow-hidden;
-}
-
-#__next {
-  @apply font-sans w-full h-full overflow-hidden;
+  @apply font-sans;
 }

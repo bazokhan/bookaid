@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from 'lib/user';
+import { User } from '@prisma/client';
 import Link from 'next/link';
 
 type Props = {
@@ -23,7 +23,7 @@ const Drawer: React.FC<Props> = ({ isOpen, user, setIsOpen }) => (
       aria-hidden="true"
     />
     <aside
-      className={`fixed top-0 right-0 z-30 w-64 h-full overflow-auto transition-all duration-300 ease-in-out transform gradient pt-16 pl-8 ${
+      className={`fixed bg-white top-0 right-0 z-30 w-64 h-full overflow-auto transition-all duration-300 ease-in-out transform gradient pt-16 pl-8 ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >

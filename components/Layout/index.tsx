@@ -9,10 +9,8 @@ const Layout: React.FC = ({ children }) => (
       <title>Bookaid</title>
     </Head>
     <Header />
-    <div className="flex flex-col justify-between w-full overflow-y-auto h-mainSm md:h-main">
-      <main>{children}</main>
-      <Footer />
-    </div>
+    <main className="flex flex-col justify-between w-full">{children}</main>
+    <Footer />
   </>
 );
 
