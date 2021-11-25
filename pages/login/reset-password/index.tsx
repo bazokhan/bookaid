@@ -70,7 +70,7 @@ const ResetPassword: React.FC = () => {
           </Button>
           {errorMsg ? <ErrorMessage error={new Error(errorMsg)} /> : null}
           {successMsg ? (
-            <p className="text-green-500 font-bold">{successMsg}</p>
+            <p className="text-green-600 font-bold">{successMsg}</p>
           ) : null}
         </Stack>
       </form>

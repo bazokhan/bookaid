@@ -22,7 +22,7 @@ const LinkButton = ({
 }: Props): React.ReactElement => (
   <Link href={href}>
     <a
-      className={`inline-block px-4 py-2 bg-green-200 border border-gray-600 rounded-default ${
+      className={`inline-block px-4 py-2 bg-gray-900 text-green-600 rounded-default ${
         loading
           ? 'cursor-wait'
           : disabled

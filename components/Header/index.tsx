@@ -9,11 +9,11 @@ const Header: React.FC = () => {
   const user = useUser();
 
   return (
-    <header className="w-full px-4 py-3 overflow-hidden  md:py-6 md:px-[80px] shadow-header ">
+    <header className="w-full px-4 py-3 overflow-hidden  md:py-6 md:px-[80px] shadow-header">
       <nav className="w-full">
         <ul className="flex items-center justify-between w-full flex-nowrap">
           <li>
-            <LinkButton href="/">Bookaid</LinkButton>
+            <LinkButton href="/">AuthExample</LinkButton>
           </li>
           {user ? (
             <li>
@@ -21,7 +21,7 @@ const Header: React.FC = () => {
                 className="flex content-center"
                 onClick={() => setIsOpen(prev => !prev)}
               >
-                <p className="ml-2 text-lg text-black">{user?.username}</p>
+                <p className="ml-2 text-lg text-gray-100">{user?.username}</p>
                 <img
                   src="/images/menu-lines.svg"
                   alt="menu"

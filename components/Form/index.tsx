@@ -24,10 +24,10 @@ const Form: React.FC<Props> = ({ isLogin, errorMessage, onSubmit }) => (
         />
       )}
       <Input
-        label={isLogin ? 'Email / Username' : 'Username'}
+        label={isLogin ? 'Email' : 'Username'}
         name="username"
         required
-        placeholder={isLogin ? 'Email or Username' : 'Username'}
+        placeholder={isLogin ? 'Email' : 'Username'}
       />
       <Input
         label="Password"

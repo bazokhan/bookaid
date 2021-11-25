@@ -9,12 +9,12 @@ const Profile: React.FC = () => {
 
   return (
     <Layout>
-      <Title>My Profile</Title>
       {user ? (
         <Stack>
-          <p className="text-main-4">Username: </p>
+          <Title>My Profile</Title>
+          <p>Username: </p>
           <p className="font-bold py-2 px-4">{user.username}</p>
-          <p className="text-main-4">Email: </p>
+          <p>Email: </p>
           <p className="font-bold py-2 px-4">{user.email}</p>
         </Stack>
       ) : null}

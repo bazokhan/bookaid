@@ -7,14 +7,8 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <meta
-            name="description"
-            content="Bookaid help you manage your accounting books."
-          />
-          <meta
-            name="keywords"
-            content="accounting, budget, books, transactions"
-          />
+          <meta name="description" content="description for AuthExample" />
+          <meta name="keywords" content="key, words" />
         </Head>
         <body className="relative">
           <div

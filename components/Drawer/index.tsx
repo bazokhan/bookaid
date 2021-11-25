@@ -11,7 +11,7 @@ type Props = {
 const routes = [
   { title: 'My accounts', url: '/' },
   { title: 'User Settings', url: '/profile' },
-  { title: 'Logout', url: '/api/auth/logout', fontColor: 'text-error' }
+  { title: 'Logout', url: '/api/auth/logout', fontColor: 'text-green-600' }
 ];
 
 const Drawer: React.FC<Props> = ({ isOpen, user, setIsOpen }) => (
@@ -24,19 +24,21 @@ const Drawer: React.FC<Props> = ({ isOpen, user, setIsOpen }) => (
       aria-hidden="true"
     />
     <aside
-      className={`fixed bg-white top-0 right-0 z-30 w-64 h-screen overflow-auto transition-all duration-300 ease-in-out transform gradient pt-16 pl-8 ${
+      className={`fixed bg-gray-900 top-0 right-0 z-30 w-64 h-screen overflow-auto transition-all duration-300 ease-in-out transform gradient pt-16 pl-8 ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
       <div className="flex flex-col items-center">
-        <p className="mt-2 text-2xl font-bold text-black">{user?.username}</p>
+        <p className="mt-2 text-2xl font-bold text-gray-100">
+          {user?.username}
+        </p>
       </div>
       <ul className="mt-16">
         {routes.map(route => (
           <li
             key={route.title}
             className={`my-3 text-lg font-bold  transform w-[fit-content] hover:scale-110 ${
-              route?.fontColor || 'text-black'
+              route?.fontColor || 'text-gray-100'
             }`}
           >
             <Link href={route.url}>

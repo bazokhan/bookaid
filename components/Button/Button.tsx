@@ -20,7 +20,7 @@ const Button = ({
 }: Props): React.ReactElement => (
   <button
     type={type}
-    className={`px-4 py-2 bg-gray-200 border border-gray-600 rounded-default ${
+    className={`px-4 py-2 bg-gray-900 text-purple-600 rounded-default ${
       loading
         ? 'cursor-wait'
         : disabled
