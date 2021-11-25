@@ -1,5 +1,9 @@
 import React from 'react';
-import Link from 'next/link';
+import Stack from 'components/Layout/Stack';
+import ErrorMessage from 'components/States/ErrorMessage';
+import Button from 'components/Button/Button';
+import LinkButton from 'components/Button/LinkButton';
+import Input from './Input';
 
 type Props = {
   isLogin: boolean,
@@ -9,83 +13,60 @@ type Props = {
 
 const Form: React.FC<Props> = ({ isLogin, errorMessage, onSubmit }) => (
   <form onSubmit={onSubmit}>
-    {!isLogin && (
-      <label className="pb-1 text-sm">
-        <p>Email</p>
-        <input
+    <Stack>
+      {!isLogin && (
+        <Input
+          label="Email"
           type="email"
           name="email"
           required
           placeholder="Your email address"
-          className="w-full p-4 mb-6 rounded-xl"
         />
-      </label>
-    )}
-    <label className="pb-1 text-sm">
-      <p>{isLogin ? 'Email / Username' : 'Username'}</p>
-      <input
-        type="text"
+      )}
+      <Input
+        label={isLogin ? 'Email / Username' : 'Username'}
         name="username"
         required
         placeholder={isLogin ? 'Email or Username' : 'Username'}
-        className="w-full p-4 mb-6 rounded-xl"
       />
-    </label>
-    <label className="pb-1 text-sm">
-      <p>Password</p>
-      <input
+      <Input
+        label="Password"
         type="password"
         name="password"
         required
         placeholder="Enter your password"
-        className="w-full p-4 mb-6 rounded-xl"
       />
-    </label>
-    {!isLogin && (
-      <label className="pb-1 text-sm">
-        <p>Repeat password</p>
-        <input
+      {!isLogin && (
+        <Input
+          label="Repeat password"
           type="password"
-          name="rpassword"
+          name="password"
           required
           placeholder="Repeat password"
-          className="w-full p-4 mb-6 rounded-xl"
         />
-      </label>
-    )}
+      )}
 
-    <div>
       {isLogin ? (
         <>
-          <button type="submit" className="w-full py-4 btn">
+          <Button type="submit" className="w-full py-4 btn">
             Login
-          </button>
-          <Link href="/signup">
-            <a className="mt-3 block hover:text-main-3">
-              I don't have an account (go to signup)
-            </a>
-          </Link>
-          <Link href="/login/reset-password">
-            <a className="mt-2 block hover:text-main-3">
-              Forget your password? reset now
-            </a>
-          </Link>
+          </Button>
+          <LinkButton href="/signup">Don't have an account? Signup</LinkButton>
+          <LinkButton href="/login/reset-password">
+            Forget your password? reset now
+          </LinkButton>
         </>
       ) : (
         <>
-          <button type="submit" className="w-full py-4 btn">
+          <Button type="submit" className="w-full py-4 btn">
             Signup
-          </button>
-          <Link href="/login">
-            <a className="mt-5 hover:text-main-3">
-              I already have an account (go to login)
-            </a>
-          </Link>
+          </Button>
+          <LinkButton href="/login">Already have an account? Login</LinkButton>
         </>
       )}
-    </div>
 
-    {errorMessage && <p className="text-error">{errorMessage}</p>}
+      {errorMessage && <ErrorMessage error={new Error(errorMessage)} />}
+    </Stack>
   </form>
 );
 

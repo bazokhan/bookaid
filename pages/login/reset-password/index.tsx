@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import Layout from 'components/Layout';
+import Input from 'components/Form/Input';
+import Button from 'components/Button/Button';
+import ErrorMessage from 'components/States/ErrorMessage';
+import Stack from 'components/Layout/Stack';
 
 const ResetPassword: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState('');
@@ -49,27 +53,27 @@ const ResetPassword: React.FC = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center w-full max-w-sm px-4 mx-auto mt-16">
-        <form onSubmit={handleSubmit} className="w-full">
-          <label className="pb-1 text-sm">
-            <p>Email</p>
-            <input
-              type="email"
-              name="email"
-              required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full p-4  rounded-xl"
-            />
-          </label>
-          <button type="submit" className="w-full py-2 mt-4 btn">
-            {loading ? 'Loading...' : 'Send'}
-          </button>
-          {errorMsg && <p className="text-error">{errorMsg}</p>}
-          {successMsg && <p className="text-main-4">{successMsg}</p>}
-        </form>
-      </div>
+      <form onSubmit={handleSubmit}>
+        <Stack>
+          <Input
+            label="Email"
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            required
+            onChange={e => setEmail(e.target.value)}
+            value={email}
+          />
+
+          <Button loading={loading} type="submit">
+            Send
+          </Button>
+          {errorMsg ? <ErrorMessage error={new Error(errorMsg)} /> : null}
+          {successMsg ? (
+            <p className="text-green-500 font-bold">{successMsg}</p>
+          ) : null}
+        </Stack>
+      </form>
     </Layout>
   );
 };

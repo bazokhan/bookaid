@@ -21,11 +21,6 @@ const Header: React.FC = () => {
                 className="flex content-center"
                 onClick={() => setIsOpen(prev => !prev)}
               >
-                <img
-                  src={user?.image || '/images/userPlaceHolder.png'}
-                  alt={`${user?.username}`}
-                  className="w-8 h-8 rounded-full"
-                />
                 <p className="ml-2 text-lg text-black">{user?.username}</p>
                 <img
                   src="/images/menu-lines.svg"

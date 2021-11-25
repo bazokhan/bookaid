@@ -9,7 +9,7 @@ const Profile: React.FC = () => {
 
   return (
     <Layout>
-      <Title>My Acoount</Title>
+      <Title>My Profile</Title>
       {user ? (
         <Stack>
           <p className="text-main-4">Username: </p>

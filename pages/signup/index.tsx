@@ -5,6 +5,7 @@ import Layout from 'components/Layout';
 import Form from 'components/Form';
 import { LoginForm } from 'common/types';
 import validateUsername from 'helpers/validateUsername';
+import Title from 'components/Typography/Title';
 
 const Signup: React.FC = () => {
   useUser({ redirectTo: '/', redirectIfFound: true });
@@ -73,7 +74,7 @@ const Signup: React.FC = () => {
   return (
     <Layout>
       <div className="flex flex-col items-center w-full max-w-sm px-4 mx-auto mt-16">
-        <p className="text-2xl font-bold text-black">Create your account </p>
+        <Title>Create your account</Title>
         <Form isLogin={false} errorMessage={errorMsg} onSubmit={handleSubmit} />
       </div>
     </Layout>

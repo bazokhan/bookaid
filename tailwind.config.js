@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const scrollbarPlugin = require('tailwind-scrollbar');
-const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   mode: 'jit',
@@ -12,32 +11,6 @@ module.exports = {
   darkMode: false,
   theme: {
     extend: {
-      colors: {
-        main: {
-          1: '#EAEAEA',
-          2: '#D2E8F2',
-          3: '#B2ACAC',
-          4: '#07ABBF',
-          5: '#0081CC',
-          6: '#151F4E',
-          7: '#001E3B',
-          8: '#E65030'
-        },
-        bg: {
-          100: '#FFFFFF',
-          200: '#F3F3F3',
-          300: '#E3E3E3',
-          400: '#CCCCCC',
-          600: '#999999',
-          700: '#202020',
-          800: '#060707',
-          900: '#000000'
-        },
-        error: '#EB4D4D'
-      },
-      fontFamily: {
-        sans: ['MarkPro', ...defaultTheme.fontFamily.sans]
-      },
       cursor: {
         grab: 'grab'
       },

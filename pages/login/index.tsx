@@ -3,6 +3,7 @@ import { useUser } from 'hooks/useUser';
 import Layout from 'components/Layout';
 import Form from 'components/Form';
 import { LoginForm } from 'common/types';
+import Title from 'components/Typography/Title';
 
 const Login: React.FC = () => {
   useUser({ redirectTo: '/', redirectIfFound: true });
@@ -40,7 +41,7 @@ const Login: React.FC = () => {
   return (
     <Layout>
       <div className="flex flex-col items-center w-full max-w-sm px-4 mx-auto mt-16">
-        <p className="text-2xl font-bold text-black">Log in </p>
+        <Title>Log in</Title>
         <Form isLogin errorMessage={errorMsg} onSubmit={handleSubmit} />
       </div>
     </Layout>

@@ -35,6 +35,7 @@ const Home: React.FC = () => {
 
   const [searchValue, setSearchValue] = useState('');
   const [debouncedSearchValue] = useDebounce(searchValue, 500);
+  const [activeAccount, setActiveAccount] = useState(null);
 
   const {
     getProfileByUsername,
@@ -79,7 +80,16 @@ const Home: React.FC = () => {
               key={account.id}
               className="border border-gray-700 border-dashed rounded-default p-4"
             >
-              <LinkButton href={`/${account.id}`}>{account.name}</LinkButton>
+              <div className="flex justify-between mb-4">
+                <LinkButton href={`/${account.id}`}>{account.name}</LinkButton>
+                <Button
+                  onClick={() =>
+                    setActiveAccount(account === activeAccount ? null : account)
+                  }
+                >
+                  Share with other users
+                </Button>
+              </div>
               <DataWrapper
                 error={error}
                 loading={loading}
@@ -88,17 +98,52 @@ const Home: React.FC = () => {
               >
                 {account.permissions?.map(p => (
                   <div key={p.id} className="flex justify-start items-center">
-                    <p>Users with permissions: </p>
+                    <p className="mx-2">Users with permissions: </p>
                     <Button onClick={() => deleteAccountPermission(p)}>
-                      {p.user?.username}
+                      {p.user?.username}{' '}
+                      <span className="mx-2 text-xs italic">
+                        Click to revoke permission
+                      </span>
                     </Button>
-                    <p>Role: </p>
+                    <p className="mx-2">Role: </p>
                     <Button onClick={() => onChangeRole(p, p.role)}>
-                      {p.role}
+                      {p.role}{' '}
+                      <span className="mx-2 text-xs italic">
+                        Click to change it
+                      </span>
                     </Button>
                   </div>
                 ))}
               </DataWrapper>
+              {activeAccount === account ? (
+                <Stack>
+                  <Input
+                    label="Search profiles to share your account with"
+                    name="Search"
+                    placeholder="search profiles"
+                    onChange={e => setSearchValue(e.target.value)}
+                  />
+                  {debouncedSearchValue ? (
+                    <DataWrapper
+                      error={searchProfileError}
+                      loading={searchProfileLoading}
+                      data={profiles}
+                      emptyTitle="No users found!"
+                    >
+                      {profiles?.map(p => (
+                        <Button
+                          key={p.id}
+                          onClick={() =>
+                            createAccountPermission(p, activeAccount)
+                          }
+                        >
+                          {p.username}
+                        </Button>
+                      ))}
+                    </DataWrapper>
+                  ) : null}
+                </Stack>
+              ) : null}
             </div>
           ))}
         </DataWrapper>
@@ -118,31 +163,6 @@ const Home: React.FC = () => {
             Create Account
           </Button>
         </form>
-      </Stack>
-      <Stack>
-        <Input
-          label="Search profiles to share your account with"
-          name="Search"
-          placeholder="search profiles"
-          onChange={e => setSearchValue(e.target.value)}
-        />
-        {debouncedSearchValue ? (
-          <DataWrapper
-            error={searchProfileError}
-            loading={searchProfileLoading}
-            data={profiles}
-            emptyTitle="No users found!"
-          >
-            {profiles?.map(p => (
-              <Button
-                key={p.id}
-                onClick={() => createAccountPermission(p, myAccounts?.[0])}
-              >
-                {p.username}
-              </Button>
-            ))}
-          </DataWrapper>
-        ) : null}
       </Stack>
     </Layout>
   );

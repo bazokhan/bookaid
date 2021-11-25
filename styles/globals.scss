@@ -2,11 +2,6 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-@font-face {
-  font-family: 'MarkPro';
-  src: local('MarkPro'), url(../public/fonts/MARKPRO.woff) format('woff');
-}
-
 body {
   @apply font-sans;
 }

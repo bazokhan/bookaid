@@ -25,7 +25,7 @@ const Input = ({
     <input
       id={name}
       name={name}
-      className={`px-4 py-2 border border-gray-600 rounded-default ${className}`}
+      className={`w-full px-4 py-2 border border-gray-600 rounded-default ${className}`}
       {...props}
     />
   </label>
